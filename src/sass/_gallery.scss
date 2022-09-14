@@ -19,31 +19,40 @@ a {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: #ee9600;
+  background-color: #228b22;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 .js-submit {
+  display: flex;
+
+  text-align: center;
+  justify-content: center;
+  height: 40px;
   padding: 10px;
   border: none;
   cursor: pointer;
-  border-radius: 10px;
-  background-color: #e06000;
+  box-sizing: border-box;
+  background-color: #008000;
   color: antiquewhite;
   font-size: 20px;
   font-weight: bold;
+  box-shadow: 0 0 10px 5px rgba(221, 221, 221, 1);
+  &:hover {
+    scale: 1.15;
+  }
 }
 input {
   width: 200px;
   height: 40px;
   border: none;
-  margin-right: 15px;
+
   outline: none;
-  border-radius: 10px;
+
   padding: 10px;
   font-size: 20px;
   font-weight: bold;
-}
-.js-submit:hover {
-  background-color: #ffab00;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3),
+    1px 1px 5px rgba(255, 255, 255, 1);
 }
 
 .gallery {
