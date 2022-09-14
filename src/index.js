@@ -1,0 +1,117 @@
+import Notiflix from 'notiflix';
+const axios = require('axios').default;
+import InfiniteScroll from 'infinite-scroll';
+
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const refs = {
+  form: document.querySelector('.search-form'),
+  submitBtn: document.querySelector('.js-submit'),
+  loadMoreBtn: document.querySelector('.load-more'),
+  gallery: document.querySelector('.gallery'),
+};
+const BASE_URl = `https://pixabay.com/api/`;
+const KEY = '29878778-792a80536ef138b77329a15b8';
+let searchQuery = '';
+let page = 1;
+
+async function fetchGalleryPic(searchQuery, page) {
+  let result = await axios.get(
+    `${BASE_URl}?key=${KEY}&q=${searchQuery}&page=${page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`
+  );
+
+  return result;
+}
+
+function makeGalleryMarkUp(images) {
+  const markUpImage = images
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `  <a href="${largeImageURL}" class="gallery__link"
+      ><div class="photo-card">
+        <img src="${webformatURL}"  alt="${tags}" loading="lazy" />
+        <div class="info">
+          <p class="info-item">
+            <b>likes: ${likes}</b>
+          </p>
+          <p class="info-item">
+            <b>views: ${views}</b>
+          </p>
+          <p class="info-item">
+            <b>comments: ${comments}</b>
+          </p>
+          <p class="info-item">
+            <b>downloads: ${downloads}</b>
+          </p>
+        </div>
+      </div></a
+    >`;
+      }
+    )
+    .join('');
+
+  refs.gallery.insertAdjacentHTML('beforeEnd', markUpImage);
+}
+
+function onSearch(event) {
+  event.preventDefault();
+  page = 1;
+  searchQuery = event.currentTarget.elements.searchQuery.value.trim();
+
+  resetGallery();
+
+  fetchGalleryPic(searchQuery, page)
+    .then(({ data }) => {
+      if (data.totalHits === 0) {
+        Notiflix.Notify.warning(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      }
+      makeGalleryMarkUp(data.hits);
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      if (page === data.totalHits) {
+        Notiflix.Notify.warning(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
+      new SimpleLightbox('.gallery a').refresh();
+    })
+    .catch(error => console.log(error))
+    .finally(() => refs.form.reset());
+}
+
+function resetGallery() {
+  return (refs.gallery.innerHTML = '');
+}
+function onScroll() {
+  const documentRect = document.documentElement.getBoundingClientRect();
+
+  if (documentRect.bottom < document.documentElement.clientHeight + 150) {
+    page += 1;
+    fetchGalleryPic(searchQuery, page)
+      .then(({ data }) => {
+        console.log(data);
+        if (page === data.totalHits) {
+          Notiflix.Notify.warning(
+            "We're sorry, but you've reached the end of search results."
+          );
+        }
+        makeGalleryMarkUp(data.hits);
+        new SimpleLightbox('.gallery a').refresh();
+      })
+      .catch(error => console.log(error))
+      .finally(() => refs.form.reset());
+  }
+}
+refs.form.addEventListener('submit', onSearch);
+
+window.addEventListener('scroll', onScroll);
