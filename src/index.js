@@ -1,7 +1,5 @@
 import Notiflix from 'notiflix';
 const axios = require('axios').default;
-import InfiniteScroll from 'infinite-scroll';
-
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -23,7 +21,6 @@ async function fetchGalleryPic(searchQuery, page) {
 
   return result;
 }
-
 function makeGalleryMarkUp(images) {
   const markUpImage = images
     .map(
