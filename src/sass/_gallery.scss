@@ -10,6 +10,9 @@ a {
   color: black;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
+span {
+  color: #008000;
+}
 .search-form {
   position: fixed;
   top: 0;
@@ -67,8 +70,10 @@ input {
 .info {
   display: flex;
   padding: 10px;
-}
-
-.info-item:not(:last-child) {
-  margin-right: 10px;
+  &item {
+    font-weight: bold;
+  }
+  &-item:not(:last-child) {
+    margin-right: 10px;
+  }
 }

@@ -1,12 +1,11 @@
 import Notiflix from 'notiflix';
-const axios = require('axios').default;
+const axios = require('axios');
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   form: document.querySelector('.search-form'),
   submitBtn: document.querySelector('.js-submit'),
-  loadMoreBtn: document.querySelector('.load-more'),
   gallery: document.querySelector('.gallery'),
 };
 const BASE_URl = `https://pixabay.com/api/`;
@@ -15,11 +14,14 @@ let searchQuery = '';
 let page = 1;
 
 async function fetchGalleryPic(searchQuery, page) {
-  let result = await axios.get(
-    `${BASE_URl}?key=${KEY}&q=${searchQuery}&page=${page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`
-  );
-
-  return result;
+  try {
+    let result = await axios.get(
+      `${BASE_URl}?key=${KEY}&q=${searchQuery}&page=${page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`
+    );
+    return result;
+  } catch {
+    error => console.log(error);
+  }
 }
 function makeGalleryMarkUp(images) {
   const markUpImage = images
@@ -38,16 +40,16 @@ function makeGalleryMarkUp(images) {
         <img src="${webformatURL}"  alt="${tags}" loading="lazy" />
         <div class="info">
           <p class="info-item">
-            <b>likes: ${likes}</b>
+            <b>likes: <span>${likes}</span> </b>
           </p>
           <p class="info-item">
-            <b>views: ${views}</b>
+            <b>views: <span>${views}</span> </b>
           </p>
           <p class="info-item">
-            <b>comments: ${comments}</b>
+            <b>comments: <span>${comments}</span> </b>
           </p>
           <p class="info-item">
-            <b>downloads: ${downloads}</b>
+            <b>downloads: <span>${downloads}</span> </b>
           </p>
         </div>
       </div></a
@@ -77,11 +79,7 @@ function onSearch(event) {
         }
         makeGalleryMarkUp(data.hits);
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits}+ images.`);
-        if (page === data.totalHits) {
-          Notiflix.Notify.warning(
-            "We're sorry, but you've reached the end of search results."
-          );
-        }
+
         new SimpleLightbox('.gallery a').refresh();
       })
       .catch(error => console.log(error))
@@ -100,18 +98,20 @@ function onScroll() {
     fetchGalleryPic(searchQuery, page)
       .then(({ data }) => {
         console.log(data);
-        if (page === data.totalHits) {
+        makeGalleryMarkUp(data.hits);
+
+        new SimpleLightbox('.gallery a').refresh();
+
+        let endOfPages = Math.ceil(data.totalHits / 40);
+        if (page === endOfPages) {
           Notiflix.Notify.warning(
             "We're sorry, but you've reached the end of search results."
           );
         }
-        makeGalleryMarkUp(data.hits);
-        new SimpleLightbox('.gallery a').refresh();
       })
       .catch(error => console.log(error))
       .finally(() => refs.form.reset());
   }
 }
 refs.form.addEventListener('submit', onSearch);
-
 window.addEventListener('scroll', onScroll);
