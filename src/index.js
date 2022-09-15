@@ -67,6 +67,7 @@ function onSearch(event) {
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
 
   resetGallery();
+
   if (searchQuery === '') {
     Notiflix.Notify.failure('Plzz , enter something');
   } else {
@@ -95,6 +96,7 @@ function onScroll() {
 
   if (documentRect.bottom < document.documentElement.clientHeight + 150) {
     page += 1;
+
     fetchGalleryPic(searchQuery, page)
       .then(({ data }) => {
         console.log(data);
@@ -115,3 +117,4 @@ function onScroll() {
 }
 refs.form.addEventListener('submit', onSearch);
 window.addEventListener('scroll', onScroll);
+
