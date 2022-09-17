@@ -16,7 +16,7 @@ let page = 1;
 async function fetchGalleryPic(searchQuery, page) {
   try {
     let result = await axios.get(
-      `${BASE_URl}?key=${KEY}&q=${searchQuery}&page=${page}&per_page=5&image_type=photo&orientation=horizontal&safesearch=true`
+      `${BASE_URl}?key=${KEY}&q=${searchQuery}&page=${page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`
     );
     return result;
   } catch {
@@ -59,28 +59,29 @@ function makeGalleryMarkUp(images) {
     .join('');
 
   refs.gallery.insertAdjacentHTML('beforeEnd', markUpImage);
+
   const cards = document.querySelector('.gallery__link:last-child');
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
-      page +=1
-      fetchGalleryPic(searchQuery, page)
-        .then(({ data }) => {
-          if (data.totalHits === 0) {
-            Notiflix.Notify.warning(
-              'Sorry, there are no images matching your search query. Please try again.'
-            );
-          }
-          makeGalleryMarkUp(data.hits);
-
-          Notiflix.Notify.success(
-            `Hooray! We found ${data.totalHits}+ images.`
-          );
-
-          new SimpleLightbox('.gallery a').refresh();
-        })
-        .catch(error => console.log(error))
-        .finally(() => refs.form.reset());
+      if (entry.isIntersecting) {
+        page += 1;
+        fetchGalleryPic(searchQuery, page)
+          .then(({ data }) => {
+            if (data.totalHits === 0) {
+              Notiflix.Notify.warning(
+                'Sorry, there are no images matching your search query. Please try again.'
+              );
+            }
+            makeGalleryMarkUp(data.hits);
+            smoothScroll();
+            new SimpleLightbox('.gallery a').refresh();
+          })
+          .catch(error => console.log(error))
+          .finally(() => refs.form.reset());
+        observer.unobserve(entry.target);
+      }
     });
+
     //
   });
   console.log(cards);
@@ -148,4 +149,13 @@ function resetGallery() {
 refs.form.addEventListener('submit', onSearch);
 
 // window.addEventListener('scroll', onScroll);
+function smoothScroll() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
 
+  window.scrollBy({
+    top: cardHeight * 2.3,
+    behavior: 'smooth',
+  });
+}
