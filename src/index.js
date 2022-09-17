@@ -65,7 +65,7 @@ function makeGalleryMarkUp(images) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         page += 1;
-        Notiflix.Loading.circle();
+        Notiflix.Loading.circle('Loading....');
         fetchGalleryPic(searchQuery, page)
           .then(({ data }) => {
             if (data.totalHits === 0) {
