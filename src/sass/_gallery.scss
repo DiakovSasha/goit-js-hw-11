@@ -1,3 +1,6 @@
+body {
+}
+
 img {
   display: block;
   width: 500px;
@@ -66,6 +69,7 @@ input {
   padding-top: 100px;
 }
 .info {
+  background-color: #faebd7;
   display: flex;
   padding: 10px;
   &item {
@@ -75,3 +79,36 @@ input {
     margin-right: 10px;
   }
 }
+// preloader +++++++++++++++++++++++++++++++++++
+
+// #container {
+//   width: 200px;
+//   height: 200px;
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// }
+
+// @keyframes animation {
+//   0% {
+//     stroke-dasharray: 1 98;
+//     stroke-dashoffset: -105;
+//   }
+//   50% {
+//     stroke-dasharray: 80 10;
+//     stroke-dashoffset: -160;
+//   }
+//   100% {
+//     stroke-dasharray: 1 98;
+//     stroke-dashoffset: -300;
+//   }
+// }
+
+// #spinner {
+//   transform-origin: center;
+//   animation-name: animation;
+//   animation-duration: 1.2s;
+//   animation-timing-function: cubic-bezier;
+//   animation-iteration-count: infinite;
+// }

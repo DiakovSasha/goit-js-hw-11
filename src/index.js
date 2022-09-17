@@ -65,6 +65,7 @@ function makeGalleryMarkUp(images) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         page += 1;
+        Notiflix.Loading.circle();
         fetchGalleryPic(searchQuery, page)
           .then(({ data }) => {
             if (data.totalHits === 0) {
@@ -86,6 +87,7 @@ function makeGalleryMarkUp(images) {
   });
   console.log(cards);
   observer.observe(cards);
+  Notiflix.Loading.remove();
   //
 }
 
