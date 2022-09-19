@@ -1,7 +1,9 @@
+html {
+  scroll-behavior: smooth;
+}
 body {
   background-color: #f0f8ff;
 }
-
 img {
   display: block;
   width: 500px;
@@ -86,4 +88,31 @@ b {
   display: flex;
   flex-direction: column;
   text-align: center;
+}
+// ====================================scrollUbtn
+.scroll__up {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &--value {
+    display: block;
+    height: calc(100% - 15px);
+    width: calc(100% - 15px);
+    background-color: #fff;
+    color: #add8e6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    margin: 0;
+  }
 }
