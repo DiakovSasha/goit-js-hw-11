@@ -1,0 +1,2 @@
+var calcScrollValue=function(){var c=document.querySelector(".scroll__up"),e=(document.querySelector(".scroll__up--value"),document.documentElement.scrollTop),l=document.documentElement.scrollHeight-document.documentElement.clientHeight,o=Math.round(100*e/l);c.style.opacity=e>100?"1":"0",c.addEventListener("click",(function(){document.documentElement.scrollTop=0})),c.style.background="conic-gradient(#add8e6 ".concat(o,"%, #d7d7d7 ").concat(o,"%)")};window.onscroll=calcScrollValue,window.onload=calcScrollValue;
+//# sourceMappingURL=index.17b2591c.js.map
