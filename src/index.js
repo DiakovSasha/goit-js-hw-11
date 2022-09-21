@@ -65,6 +65,7 @@ function makeGalleryMarkUp(images) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         page += 1;
+        smoothScroll();
         Notiflix.Loading.circle('Loading....');
         fetchGalleryPic(searchQuery, page)
           .then(({ data }) => {
@@ -74,7 +75,7 @@ function makeGalleryMarkUp(images) {
               );
             }
             makeGalleryMarkUp(data.hits);
-            smoothScroll();
+
             new SimpleLightbox('.gallery a').refresh();
           })
           .catch(error => console.log(error))

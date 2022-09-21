@@ -3,6 +3,7 @@ html {
 }
 body {
   background-color: #f0f8ff;
+  scroll-behavior: smooth;
 }
 img {
   display: block;
@@ -97,13 +98,15 @@ b {
   height: 70px;
   width: 70px;
   border-radius: 50%;
+  display: flex;
 
-  display: none;
+  opacity: 0;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: opacity 1000ms ease-in-out;
+
   &--value {
-    display: block;
     height: calc(100% - 15px);
     width: calc(100% - 15px);
     background-color: #fff;

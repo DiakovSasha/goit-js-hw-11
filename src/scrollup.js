@@ -8,9 +8,9 @@ let calcScrollValue = () => {
     document.documentElement.clientHeight;
   let scrollValue = Math.round((pos * 100) / calcHeight);
   if (pos > 100) {
-    scrollUpParent.style.display = 'flex';
+    scrollUpParent.style.opacity = '1';
   } else {
-    scrollUpParent.style.display = 'none';
+    scrollUpParent.style.opacity = '0';
   }
   scrollUpParent.addEventListener('click', () => {
     document.documentElement.scrollTop = 0;
