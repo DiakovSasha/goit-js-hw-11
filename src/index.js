@@ -2,6 +2,8 @@ import Notiflix from 'notiflix';
 const axios = require('axios');
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import Pagination from 'tui-pagination';
+import 'tui-pagination/dist/tui-pagination.css';
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -35,7 +37,7 @@ function makeGalleryMarkUp(images) {
         comments,
         downloads,
       }) => {
-        return `  <a href="${largeImageURL}" class="gallery__link"
+        return `<a href="${largeImageURL}" class="gallery__link"
       ><div class="photo-card">
         <img src="${webformatURL}"  alt="${tags}" loading="lazy" />
         <div class="info">
@@ -59,41 +61,42 @@ function makeGalleryMarkUp(images) {
     .join('');
 
   refs.gallery.insertAdjacentHTML('beforeEnd', markUpImage);
+  // =================================================================intersectionObserver()=======================================
+  // const cards = document.querySelector('.gallery__link:last-child');
+  // const observer = new IntersectionObserver((entries, observer) => {
+  //   entries.forEach(entry => {
+  //     if (entry.isIntersecting) {
+  //       page += 1;
+  //       smoothScroll();
+  //       Notiflix.Loading.circle('Loading....');
+  //       fetchGalleryPic(searchQuery, page)
+  //         .then(({ data }) => {
+  //           if (data.totalHits === 0) {
+  //             Notiflix.Notify.warning(
+  //               'Sorry, there are no images matching your search query. Please try again.'
+  //             );
+  //           }
+  //           makeGalleryMarkUp(data.hits);
 
-  const cards = document.querySelector('.gallery__link:last-child');
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        page += 1;
-        smoothScroll();
-        Notiflix.Loading.circle('Loading....');
-        fetchGalleryPic(searchQuery, page)
-          .then(({ data }) => {
-            if (data.totalHits === 0) {
-              Notiflix.Notify.warning(
-                'Sorry, there are no images matching your search query. Please try again.'
-              );
-            }
-            makeGalleryMarkUp(data.hits);
+  //           new SimpleLightbox('.gallery a').refresh();
+  //         })
+  //         .catch(error => console.log(error))
+  //         .finally(() => refs.form.reset());
+  //       observer.unobserve(entry.target);
+  //     }
+  //   });
 
-            new SimpleLightbox('.gallery a').refresh();
-          })
-          .catch(error => console.log(error))
-          .finally(() => refs.form.reset());
-        observer.unobserve(entry.target);
-      }
-    });
-
-    //
-  });
-  console.log(cards);
-  observer.observe(cards);
-  Notiflix.Loading.remove();
-  //
+  //   //
+  // });
+  // console.log(cards);
+  // observer.observe(cards);
+  // Notiflix.Loading.remove();
+  // ===============================================================================================intersectionObserver finish==========
 }
 
 function onSearch(event) {
   event.preventDefault();
+
   page = 1;
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
 
@@ -123,7 +126,7 @@ function onSearch(event) {
 function resetGallery() {
   return (refs.gallery.innerHTML = '');
 }
-
+// ====================================================onScrollEvent(bad practice)==============================================
 // function onScroll() {
 //   const documentRect = document.documentElement.getBoundingClientRect();
 
@@ -162,3 +165,50 @@ function smoothScroll() {
     behavior: 'smooth',
   });
 }
+// ==========================================================================================tui pagination()==================
+const options = {
+  totalItems: 500,
+  itemsPerPage: 40,
+  visiblePages: 5,
+  page: 1,
+  centerAlign: true,
+  firstItemClassName: 'tui-first-child',
+  lastItemClassName: 'tui-last-child',
+  template: {
+    page: '<a href="#" class="tui-page-btn">{{page}}</a>',
+    currentPage:
+      '<strong class="tui-page-btn tui-is-selected">{{page}}</strong>',
+    moveButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}">{{type}}</span>' +
+      '</a>',
+    disabledMoveButton:
+      '<span class="tui-page-btn tui-is-disabled tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}">{{type}}</span>' +
+      '</span>',
+    moreButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}-is-ellip">' +
+      '<span class="tui-ico-ellip">...</span>' +
+      '</a>',
+  },
+};
+
+const pagination = new Pagination('pagination', options);
+
+pagination.on('afterMove', function (eventData) {
+  resetGallery();
+  fetchGalleryPic(searchQuery, eventData.page)
+    .then(({ data }) => {
+      if (data.totalHits === 0) {
+        Notiflix.Notify.warning(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      }
+      makeGalleryMarkUp(data.hits);
+
+      new SimpleLightbox('.gallery a').refresh();
+    })
+    .catch(error => console.log(error))
+    .finally(() => refs.form.reset());
+});
+// ===============================================================================================tui pagination stop=========
