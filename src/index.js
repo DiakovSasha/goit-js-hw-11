@@ -59,7 +59,7 @@ function makeGalleryMarkUp(images) {
       }
     )
     .join('');
-
+  Notiflix.Loading.circle('Loading....');
   refs.gallery.insertAdjacentHTML('beforeEnd', markUpImage);
   // =================================================================intersectionObserver()=======================================
   // const cards = document.querySelector('.gallery__link:last-child');
@@ -119,7 +119,10 @@ function onSearch(event) {
         new SimpleLightbox('.gallery a').refresh();
       })
       .catch(error => console.log(error))
-      .finally(() => refs.form.reset());
+      .finally(() => {
+        Notiflix.Loading.remove();
+        refs.form.reset();
+      });
   }
 }
 
@@ -171,7 +174,7 @@ const options = {
   itemsPerPage: 40,
   visiblePages: 5,
   page: 1,
-  centerAlign: true,
+  centerAlign: false,
   firstItemClassName: 'tui-first-child',
   lastItemClassName: 'tui-last-child',
   template: {
@@ -209,6 +212,9 @@ pagination.on('afterMove', function (eventData) {
       new SimpleLightbox('.gallery a').refresh();
     })
     .catch(error => console.log(error))
-    .finally(() => refs.form.reset());
+    .finally(() => {
+      Notiflix.Loading.remove();
+      refs.form.reset();
+    });
 });
 // ===============================================================================================tui pagination stop=========
